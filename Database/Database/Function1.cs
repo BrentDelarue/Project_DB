@@ -8,18 +8,22 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Microsoft.Azure.Documents.Client;
+using System.Text;
+using System.Diagnostics;
 
 namespace Database
 {
     public static class Function1
     {
-        [FunctionName("Function1")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
-            ILogger log)
+        [FunctionName("Registreren")]
+        public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req, ILogger log)
         {
             try
             {
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                User drink = JsonConvert.DeserializeObject<User>(requestBody);
+                drink.Id = Guid.NewGuid();
+
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
 
@@ -27,12 +31,12 @@ namespace Database
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Users");
 
                 await client.CreateDocumentAsync(collectionUrl, drink);
-                return StatusCodeResult();
+                return new OkObjectResult("cv");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                Debug.WriteLine("Error: " + ex.Message);
+                throw ex;
             }
         }
     }
