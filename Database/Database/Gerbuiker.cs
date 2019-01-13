@@ -14,5 +14,6 @@ namespace Database
         public string Lengte { get; set; }
         public string Gewicht { get; set; }
         public List<string> Achievements { get; set; }
+        public string API { get; set; }
     }
 }

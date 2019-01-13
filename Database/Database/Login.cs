@@ -18,7 +18,7 @@ namespace Database
     {
         [FunctionName("Login")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             try
@@ -31,7 +31,7 @@ namespace Database
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Users");
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
                 string query = $"SELECT * FROM c WHERE c.Naam = \"{user["Naam"]}\" and c.Wachtwoord = \"{user["Wachtwoord"]}\"";
-                var result = client.CreateDocumentQuery<Gerbuiker>(collectionUrl, query, queryOptions).AsEnumerable();
+                var result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable();
                 if (result.Count() == 0)
                 {
                     return new OkObjectResult(false);
