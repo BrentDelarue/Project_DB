@@ -26,7 +26,7 @@ namespace Database
             try
             {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                Gerbuiker user = JsonConvert.DeserializeObject<Gerbuiker>(requestBody);
+                Gebruiker user = JsonConvert.DeserializeObject<Gebruiker>(requestBody);
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);

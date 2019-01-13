@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Database
 {
-    public class Gerbuiker
+    public class Gebruiker
     {
         public Guid user{ get; set; }
         public string Email { get; set; }

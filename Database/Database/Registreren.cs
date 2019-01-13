@@ -22,7 +22,7 @@ namespace Database
             try
             {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                Gerbuiker user = JsonConvert.DeserializeObject<Gerbuiker>(requestBody);
+                Gebruiker user = JsonConvert.DeserializeObject<Gebruiker>(requestBody);
                 user.user = Guid.NewGuid();
 
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));

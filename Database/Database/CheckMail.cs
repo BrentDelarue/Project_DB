@@ -9,8 +9,8 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Microsoft.Azure.Documents.Client;
-using System.Diagnostics;
 using System.Linq;
+using System.Diagnostics;
 
 namespace Database
 {
@@ -18,8 +18,8 @@ namespace Database
     {
         [FunctionName("CheckMail")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
-            ILogger log)
+               [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
+               ILogger log)
         {
             try
             {
