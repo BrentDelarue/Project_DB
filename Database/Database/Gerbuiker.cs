@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Database
 {
-    public class User
+    public class Gerbuiker
     {
-        public Guid Id { get; set; }
+        public Guid user{ get; set; }
         public string Email { get; set; }
         public string Naam { get; set; }
         public string Wachtwoord { get; set; }
