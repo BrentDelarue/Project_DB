@@ -57,8 +57,8 @@ namespace Database
                 var from = new EmailAddress("nmctstreetworkoutreset@outlook.com", "StreetWorkout");
                 var subject = "Aanvraag voorlopig wachtwoord";
                 var to = new EmailAddress(user["Email"].ToString(), user["Naam"].ToString());
-                var plainTextContent = $"Beste {user["Naam"].ToString()}\nU heeft een nieuw wachtwoord aangevraagd in de app StreetBeat.\nVolgend wachtwoord is uw nieuw voorlopig wachtwoord: {wachtwoord}\nWe raden u tensterkste aan om uw wachtwoord te veranderen na het gebruiken van dit wachtwoord.\n\nGroeten support StreetBeat.";
-                var htmlContent = $"Beste {user["Naam"].ToString()}{Environment.NewLine}{Environment.NewLine}U heeft een nieuw wachtwoord aangevraagd in de app StreetBeat.{Environment.NewLine}Volgend wachtwoord is uw nieuw voorlopig wachtwoord: {wachtwoord}{Environment.NewLine}We raden u tensterkste aan om uw wachtwoord te veranderen na het gebruiken van dit wachtwoord.{Environment.NewLine}{Environment.NewLine}Groeten support StreetBeat.";
+                var plainTextContent = $"Beste {user["Naam"].ToString()}{Environment.NewLine}{Environment.NewLine}\nU heeft een nieuw wachtwoord aangevraagd in de app StreetBeat.\nVolgend wachtwoord is uw nieuw voorlopig wachtwoord: {wachtwoord}\r\nWe raden u tensterkste aan om uw wachtwoord te veranderen na het gebruiken van dit wachtwoord.\n\nGroeten support StreetBeat.";
+                var htmlContent = $"Beste {user["Naam"].ToString()}<br><br>U heeft een nieuw wachtwoord aangevraagd in de app StreetBeat.<br>Uw nieuw voorlopig wachtwoord: {wachtwoord}<br>We raden u tensterkste aan om uw wachtwoord te veranderen na het gebruiken van dit wachtwoord.<br><br>Groeten support StreetBeat.";
                 var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
                 var response = await client.SendEmailAsync(msg);
                 return new OkObjectResult(200);
