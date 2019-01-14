@@ -7,56 +7,59 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Microsoft.Azure.Documents.Client;
-using System.Text;
-using System.Diagnostics;
 using System.Linq;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
-using System.Reflection.Metadata;
+using System.Diagnostics;
 
 namespace Database
 {
-    public static class UpdateProfile
+    public static class APIUpdate
     {
-
-        [FunctionName("UpdateProfile")]
-        public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req, ILogger log)
+        [FunctionName("APIUpdate")]
+        public static async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
+            ILogger log)
         {
             try
             {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                Gebruiker user = JsonConvert.DeserializeObject<Gebruiker>(requestBody);
+                JObject user = JsonConvert.DeserializeObject<JObject>(requestBody);
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Users");
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
-                string query = $"SELECT * FROM c WHERE c.Naam = \"{user.Naam}\" and c.Wachtwoord = \"{user.Wachtwoord}\"";
+                string query = $"SELECT * FROM c WHERE c.Naam = \"{user["Naam"]}\"";
                 JObject result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
-                if (user.Gewicht != null)
+                if (user["Gewicht"] != null)
                 {
-                    result["Gewicht"] = user.Gewicht;
+                    result["Gewicht"] = user["Gewicht"];
                 }
-                if (user.Lengte != null)
+                if (user["Lengte"] != null)
                 {
-                    result["Lengte"] = user.Lengte;
+                    result["Lengte"] = user["Lengte"];
                 }
-                if (user.Leeftijd != null)
+                if (user["Leeftijd"] != null)
                 {
-                    result["Leeftijd"] = user.Leeftijd;
+                    result["Leeftijd"] = user["Leeftijd"];
                 }
-                //if (user.Achievements.Count() != 0)
+                if (user["API"] != null)
+                {
+                    result["API"] = user["API"];
+                }
+                //if (user["Achievements"].Count() != 0)
                 //{
-                //    foreach (string achievement in user.Achievements)
+                //    var lijstje = result["Achievements"].ToList();
+                //    foreach (string achievement in user["Achievements"])
                 //    {
-                //        result["Gewicht"].Add(achievement);
+                //        lijstje.Add(achievement);
                 //    }
+                //    result["Achievements"] = lijstje;
                 //}
                 var response = await client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Users", result["id"].ToString()), result);
-
-                //await client.ReplaceDocumentAsync((dynamic)result);
-                return new OkObjectResult("cv");
+                return new OkObjectResult(200);
             }
             catch (Exception ex)
             {

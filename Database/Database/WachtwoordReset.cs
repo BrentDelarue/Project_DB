@@ -7,56 +7,39 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Microsoft.Azure.Documents.Client;
-using System.Text;
-using System.Diagnostics;
-using System.Linq;
-using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-using System.Reflection.Metadata;
+using Microsoft.Azure.Documents.Client;
+using System.Linq;
+using System.Diagnostics;
 
 namespace Database
 {
-    public static class UpdateProfile
+    public static class WachtwoordReset
     {
-
-        [FunctionName("UpdateProfile")]
-        public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req, ILogger log)
+        [FunctionName("WachtwoordReset")]
+        public static async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
+            ILogger log)
         {
             try
             {
+                bool responseStatus = false;
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                Gebruiker user = JsonConvert.DeserializeObject<Gebruiker>(requestBody);
+                JObject user = JsonConvert.DeserializeObject<JObject>(requestBody);
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Users");
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
-                string query = $"SELECT * FROM c WHERE c.Naam = \"{user.Naam}\" and c.Wachtwoord = \"{user.Wachtwoord}\"";
+                string query = $"SELECT * FROM c WHERE c.Email = \"{user["Email"]}\"";
                 JObject result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
-                if (user.Gewicht != null)
+                if (user["Wachtwoord"] != null)
                 {
-                    result["Gewicht"] = user.Gewicht;
+                    result["Wachtwoord"] = user["Wachtwoord"];
+                    responseStatus = true;
                 }
-                if (user.Lengte != null)
-                {
-                    result["Lengte"] = user.Lengte;
-                }
-                if (user.Leeftijd != null)
-                {
-                    result["Leeftijd"] = user.Leeftijd;
-                }
-                //if (user.Achievements.Count() != 0)
-                //{
-                //    foreach (string achievement in user.Achievements)
-                //    {
-                //        result["Gewicht"].Add(achievement);
-                //    }
-                //}
                 var response = await client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Users", result["id"].ToString()), result);
-
-                //await client.ReplaceDocumentAsync((dynamic)result);
-                return new OkObjectResult("cv");
+                return new OkObjectResult(responseStatus);
             }
             catch (Exception ex)
             {
