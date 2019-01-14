@@ -54,7 +54,7 @@ namespace Database
                     }
                 }
                 var client = new SendGridClient(Environment.GetEnvironmentVariable("SendGrid_API"));
-                var from = new EmailAddress("nmctstreetworkout@outlook.com", "StreetWorkout");
+                var from = new EmailAddress("nmctstreetworkoutreset@outlook.com", "StreetWorkout");
                 var subject = "Aanvraag voorlopig wachtwoord";
                 var to = new EmailAddress(user["Email"].ToString(), user["Naam"].ToString());
                 var plainTextContent = $"Beste {user["Naam"].ToString()}\nU heeft een nieuw wachtwoord aangevraagd in de app StreetBeat.\nVolgend wachtwoord is uw nieuw voorlopig wachtwoord: {wachtwoord}\nWe raden u tensterkste aan om uw wachtwoord te veranderen na het gebruiken van dit wachtwoord.\n\nGroeten support StreetBeat.";
