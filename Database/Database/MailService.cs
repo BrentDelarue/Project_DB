@@ -61,8 +61,6 @@ namespace Database
                 var htmlContent = $"Beste {user["Naam"].ToString()}{Environment.NewLine}{Environment.NewLine}U heeft een nieuw wachtwoord aangevraagd in de app StreetBeat.{Environment.NewLine}Volgend wachtwoord is uw nieuw voorlopig wachtwoord: {wachtwoord}{Environment.NewLine}We raden u tensterkste aan om uw wachtwoord te veranderen na het gebruiken van dit wachtwoord.{Environment.NewLine}{Environment.NewLine}Groeten support StreetBeat.";
                 var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
                 var response = await client.SendEmailAsync(msg);
-                Debug.WriteLine(htmlContent);
-                Debug.WriteLine("send");
                 return new OkObjectResult(200);
             }
             catch (Exception ex)
