@@ -27,7 +27,7 @@ namespace Database
             DocumentClient client = new DocumentClient(serviceEndPoint, key);
             var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Users");
             FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
-            string query = $"SELECT Leeftijd, Lengte, Gewicht, Waterdoel FROM c WHERE c.Naam = \"{user["Naam"]}\"";
+            string query = $"SELECT * FROM c WHERE c.Naam = \"{user["Naam"]}\"";
             JObject result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
             return new OkObjectResult(result);
         }
