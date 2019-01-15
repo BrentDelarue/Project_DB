@@ -31,7 +31,7 @@ namespace Database
                 Uri collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Users");
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
                 string query = $"SELECT * FROM c WHERE c.{userReference["Referentie"]} = \"{userReference[userReference["Referentie"].ToString()]}\"";
-                Gebruiker result = client.CreateDocumentQuery<Gebruiker>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
+                JObject result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
                 return new OkObjectResult(result);
             }
             catch (Exception ex)
