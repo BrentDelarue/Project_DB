@@ -15,5 +15,6 @@ namespace Database
         public string Gewicht { get; set; }
         public List<string> Achievements { get; set; }
         public string API { get; set; }
+        public string WaterDoel { get; set; }
     }
 }
