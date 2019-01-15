@@ -10,7 +10,7 @@ namespace Database
         public string Workout { get; set; }
         public string Moeilijkheidsgraad { get; set; }
         public string Gevoel { get; set; }
-        public DateTime Duur { get; set; }
-        public DateTime Datum { get; set; }
+        public string Duur { get; set; }
+        public string Datum { get; set; }
     }
 }
