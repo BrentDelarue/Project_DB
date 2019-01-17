@@ -16,5 +16,6 @@ namespace Database
         public List<string> Achievements { get; set; }
         public string API { get; set; }
         public string WaterDoel { get; set; }
+        public string WaterGedronken { get; set; }
     }
 }
