@@ -13,12 +13,13 @@ using System.Linq;
 using System.Diagnostics;
 using System.Reflection.Metadata;
 using System.Collections.ObjectModel;
+using Microsoft.Azure.Documents;
 
 namespace Database
 {
-    public static class DeleteAccount
+    public static class DeleteUserData
     {
-        [FunctionName("DeleteAccount")]
+        [FunctionName("DeleteUserData")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
@@ -34,8 +35,7 @@ namespace Database
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
                 string query = $"SELECT * FROM c WHERE c.Naam = \"{user["Naam"]}\" and c.Type = \"Gebruiker\"";
                 var result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
-                Debug.WriteLine(result["Type"].ToString());
-                var response = await client.DeleteDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Data", result["id"].ToString()));
+                var response = await client.DeleteDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Data", result["id"].ToString()), new RequestOptions { PartitionKey = new PartitionKey("Gebruiker") });
                 return new OkObjectResult(result["Type"].ToString());
             }
             catch (Exception ex)
