@@ -10,6 +10,9 @@ namespace Database
         public string Type { get { return "Oefening"; } }
         public string Workout { get; set; }
         public string Moeilijkheidsgraad { get; set; }
+        public string Kcal { get; set; }
+        public string MaxHart { get; set; }
+        public string AverageHart { get; set; }
         public string Gevoel { get; set; }
         public string Duur { get; set; }
         public string Datum { get; set; }
