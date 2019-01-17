@@ -6,7 +6,6 @@ namespace Database
 {
     public class Gebruiker
     {
-        public Guid user{ get; set; }
         public string Type { get { return "Gebruiker"; } }
         public string Email { get; set; }
         public string Naam { get; set; }

@@ -11,6 +11,8 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Azure.Documents.Client;
 using System.Linq;
 using System.Diagnostics;
+using System.Reflection.Metadata;
+using System.Collections.ObjectModel;
 
 namespace Database
 {
@@ -32,9 +34,9 @@ namespace Database
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
                 string query = $"SELECT * FROM c WHERE c.Naam = \"{user["Naam"]}\" and c.Type = \"Gebruiker\"";
                 var result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
-                Debug.WriteLine(result["user"].ToString());
-                var response = await client.DeleteDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Data", result["user"].ToString()));
-                return new OkObjectResult(response.StatusCode.ToString());
+                Debug.WriteLine(result["Type"].ToString());
+                var response = await client.DeleteDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Data", result["id"].ToString()));
+                return new OkObjectResult(result["Type"].ToString());
             }
             catch (Exception ex)
             {

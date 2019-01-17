@@ -30,7 +30,7 @@ namespace Database
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
-                string query = $"SELECT * FROM c WHERE c.{userData["Referentie"]} = \"{userData[userData["Referentie"].ToString()]}\"";
+                string query = $"SELECT * FROM c WHERE c.{userData["Referentie"]} = \"{userData[userData["Referentie"].ToString()]}\" and c.Type = \"Gebruiker\"";
                 JObject result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
                 if (userData["Wachtwoord"] != null)
                 {
@@ -56,7 +56,7 @@ namespace Database
                 {
                     result["WaterDoel"] = userData["WaterDoel"];
                 }
-                var response = await client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Users", result["id"].ToString()), result);
+                var response = await client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Data", result["id"].ToString()), result);
                 return new OkObjectResult(200);
             }
             catch (Exception ex)
