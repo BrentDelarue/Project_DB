@@ -28,12 +28,12 @@ namespace Database
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
-                var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Users");
+                var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
-                string query = $"SELECT * FROM c WHERE c.Naam = '{user["Naam"]}'";
+                string query = $"SELECT * FROM c WHERE c.Naam = \"{user["Naam"]}\" and c.Type = \"Gebruiker\"";
                 var result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
                 Debug.WriteLine(result["user"].ToString());
-                var response = await client.DeleteDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Users", result["user"].ToString()));
+                var response = await client.DeleteDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Data", result["user"].ToString()));
                 return new OkObjectResult(response.StatusCode.ToString());
             }
             catch (Exception ex)

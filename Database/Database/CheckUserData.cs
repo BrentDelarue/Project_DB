@@ -28,9 +28,9 @@ namespace Database
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
-                var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Users");
+                var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
-                string query = $"SELECT * FROM c WHERE c.{userCheck["Referentie"]} = '{userCheck[userCheck["Referentie"].ToString()]}'";
+                string query = $"SELECT * FROM c WHERE c.{userCheck["Referentie"]} = \"{userCheck[userCheck["Referentie"].ToString()]}\" and c.Type = \"Gebruiker\"";
                 var result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable();
                 if (result.Count() > 0)
                 {

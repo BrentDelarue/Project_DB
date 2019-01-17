@@ -29,7 +29,7 @@ namespace Database
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
 
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
-                var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Users");
+                var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
 
                 await client.CreateDocumentAsync(collectionUrl, user);
                 return new StatusCodeResult(200);
