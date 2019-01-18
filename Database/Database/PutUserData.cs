@@ -32,6 +32,10 @@ namespace Database
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
                 string query = $"SELECT * FROM c WHERE c.{userData["Referentie"]} = \"{userData[userData["Referentie"].ToString()]}\" and c.Type = \"Gebruiker\"";
                 JObject result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
+                if (userData["Naam"] != null)
+                {
+                    result["Naam"] = userData["Naam"];
+                }
                 if (userData["Wachtwoord"] != null)
                 {
                     result["Wachtwoord"] = userData["Wachtwoord"];
