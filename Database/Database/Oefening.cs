@@ -15,6 +15,6 @@ namespace Database
         public string AverageHart { get; set; }
         public string Gevoel { get; set; }
         public string Duur { get; set; }
-        public string Datum { get; set; }
+        public string Datum { get { return DateTime.Now.ToString("MM/dd/yyyy HH:mm"); } }
     }
 }
