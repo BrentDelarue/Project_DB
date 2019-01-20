@@ -8,8 +8,8 @@ namespace Database
     {
         public string Naam { get; set; }
         public string Type { get { return "Water"; } }
-        public string WaterDoel { get; set; }
-        public string WaterGedronken { get; set; }
+        public int WaterDoel { get; set; }
+        public int WaterGedronken { get; set; }
         public DateTime Datum { get; set; }
     }
 }
