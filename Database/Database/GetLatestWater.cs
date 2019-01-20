@@ -14,9 +14,9 @@ using System.Linq;
 
 namespace Database
 {
-    public static class GetLatetestWater
+    public static class GetLatestWater
     {
-        [FunctionName("GetLatetestWater")]
+        [FunctionName("GetLatestWater")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
