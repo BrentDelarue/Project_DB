@@ -13,10 +13,6 @@ namespace Database
         public string Leeftijd { get; set; }
         public string Lengte { get; set; }
         public string Gewicht { get; set; }
-        public List<string> Achievements { get; set; }
         public string API { get; set; }
-        public string Token { get; set; }
-        public string WaterDoel { get; set; }
-        public string WaterGedronken { get; set; }
     }
 }
