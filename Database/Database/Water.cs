@@ -10,6 +10,7 @@ namespace Database
         public string Type { get { return "Water"; } }
         public int WaterDoel { get; set; }
         public int WaterGedronken { get; set; }
-        public DateTime Datum { get; set; }
+        public DateTime DatumTijd { get; set; }
+        public string Datum { get; set; }
     }
 }
