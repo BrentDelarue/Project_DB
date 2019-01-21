@@ -60,6 +60,10 @@ namespace Database
                 {
                     result["WaterDoel"] = userData["WaterDoel"];
                 }
+                if (userData["Token"] != null)
+                {
+                    result["Token"] = userData["Token"];
+                }
                 var response = await client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Data", result["id"].ToString()), result);
                 return new OkObjectResult(200);
             }
