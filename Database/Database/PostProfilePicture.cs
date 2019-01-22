@@ -26,8 +26,7 @@ namespace Database
             {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 ProfilePicture image = JsonConvert.DeserializeObject<ProfilePicture>(requestBody);
-                byte[] byteArray = Encoding.ASCII.GetBytes(image.stream);
-                MemoryStream stream = new MemoryStream(byteArray);
+                MemoryStream stream = new MemoryStream(image.stream);
                 CloudStorageAccount _cloudStorageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("BlobStorageAccount"));
                 CloudBlobClient blobClient = _cloudStorageAccount.CreateCloudBlobClient();
                 CloudBlobContainer container = blobClient.GetContainerReference("profilepicture");
