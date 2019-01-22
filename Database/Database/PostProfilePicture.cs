@@ -26,11 +26,13 @@ namespace Database
             {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 ProfilePicture image = JsonConvert.DeserializeObject<ProfilePicture>(requestBody);
+                byte[] byteArray = Encoding.ASCII.GetBytes(image.stream);
+                MemoryStream stream = new MemoryStream(byteArray);
                 CloudStorageAccount _cloudStorageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("BlobStorageAccount"));
                 CloudBlobClient blobClient = _cloudStorageAccount.CreateCloudBlobClient();
                 CloudBlobContainer container = blobClient.GetContainerReference("profilepicture");
                 CloudBlockBlob cloudBlockBlob = container.GetBlockBlobReference(image.Naam); cloudBlockBlob.Properties.ContentType = "image/jpg";
-                await cloudBlockBlob.UploadFromStreamAsync(image.stream);
+                await cloudBlockBlob.UploadFromStreamAsync(stream);
                 return new StatusCodeResult(200);
             }
             catch (Exception ex)
