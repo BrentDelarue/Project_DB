@@ -8,6 +8,6 @@ namespace Database
     public class ProfilePicture
     {
         public string Naam { get; set; }
-        public string stream { get; set; }
+        public Byte[] stream { get; set; }
     }
 }
