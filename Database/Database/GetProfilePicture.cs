@@ -40,7 +40,9 @@ namespace Database
                 
                 CloudBlockBlob blockBlob = container.GetBlockBlobReference(naam["Naam"] + ".jpg");
 
-                Uri url = new Uri(blockBlob.Uri + sasBlobToken);
+                JObject url = new JObject();
+                url["Uri"] = blockBlob.Uri;
+                url["SAS"] = sasBlobToken;
                 return new OkObjectResult(url);
             }
             catch (Exception ex)
