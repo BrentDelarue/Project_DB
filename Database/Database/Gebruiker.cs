@@ -9,6 +9,7 @@ namespace Database
         public string Type { get { return "Gebruiker"; } }
         public string Email { get; set; }
         public string Naam { get; set; }
+        public string ApiNaam { get; set; }
         public string Wachtwoord { get; set; }
         public string Leeftijd { get; set; }
         public string Lengte { get; set; }

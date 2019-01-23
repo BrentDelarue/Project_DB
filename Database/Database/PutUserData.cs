@@ -36,6 +36,10 @@ namespace Database
                 {
                     result["Naam"] = userData["Naam"];
                 }
+                if (userData["ApiNaam"] != null)
+                {
+                    result["ApiNaam"] = userData["ApiNaam"];
+                }
                 if (userData["Wachtwoord"] != null)
                 {
                     result["Wachtwoord"] = userData["Wachtwoord"];
