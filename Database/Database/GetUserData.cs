@@ -28,8 +28,8 @@ namespace Database
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 Uri collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
-                string query = $"SELECT * FROM c WHERE c.{reference} = \"{value}\" and c.Type = \"Gebruiker\"";
-                GebruikerSave result = client.CreateDocumentQuery<GebruikerSave>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
+                string query = $"SELECT * FROM c WHERE c.{reference} = \"{value}\" and c.Type = \"User\"";
+                UserSave result = client.CreateDocumentQuery<UserSave>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
                 return new OkObjectResult(result);
             }
             catch (Exception ex)

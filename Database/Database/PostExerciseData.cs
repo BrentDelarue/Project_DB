@@ -8,14 +8,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Microsoft.Azure.Documents.Client;
-using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 
 namespace Database
 {
-    public static class PostWater
+    public static class PostExerciseData
     {
-        [FunctionName("PostWater")]
+        [FunctionName("PostExerciseData")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
@@ -23,7 +22,7 @@ namespace Database
             try
             {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                Water oef = JsonConvert.DeserializeObject<Water>(requestBody);
+                Exercise exe = JsonConvert.DeserializeObject<Exercise>(requestBody);
 
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
@@ -31,7 +30,7 @@ namespace Database
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
 
-                await client.CreateDocumentAsync(collectionUrl, oef);
+                await client.CreateDocumentAsync(collectionUrl, exe);
                 return new StatusCodeResult(200);
             }
             catch (Exception ex)

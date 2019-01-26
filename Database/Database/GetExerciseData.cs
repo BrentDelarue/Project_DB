@@ -11,15 +11,15 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Azure.Documents.Client;
 using System.Linq;
 using System.Diagnostics;
-using Microsoft.Azure.Documents;
+using System.Collections.Generic;
 
 namespace Database
 {
-    public static class DeleteWater
+    public static class GetExerciseData
     {
-        [FunctionName("DeleteWater")]
+        [FunctionName("GetExerciseData")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "DeleteWater/{value}")] HttpRequest req, string value,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetExerciseData{value}")] HttpRequest req, string value,
             ILogger log)
         {
             try
@@ -27,15 +27,11 @@ namespace Database
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
-                var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
+                Uri collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
-                string query = $"SELECT * FROM c WHERE c.Naam = \"{value}\" and c.Type = \"Water\"";
-                var result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable();
-                foreach (JObject oefening in result)
-                {
-                    await client.DeleteDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Data", oefening["id"].ToString()), new RequestOptions { PartitionKey = new PartitionKey("Water") });
-                }
-                return new OkObjectResult(200);
+                string query = $"SELECT * FROM c WHERE c.Name = \"{value}\" and c.Type = \"Exercise\"";
+                var result = client.CreateDocumentQuery<Exercise>(collectionUrl, query, queryOptions).AsEnumerable();
+                return new OkObjectResult(result);
             }
             catch (Exception ex)
             {

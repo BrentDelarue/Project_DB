@@ -31,9 +31,9 @@ namespace Database
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
-                string query = $"SELECT * FROM c WHERE c.Naam = \"{value}\" and c.Type = \"Gebruiker\"";
+                string query = $"SELECT * FROM c WHERE c.Name = \"{value}\" and c.Type = \"User\"";
                 var result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
-                var response = await client.DeleteDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Data", result["id"].ToString()), new RequestOptions { PartitionKey = new PartitionKey("Gebruiker") });
+                var response = await client.DeleteDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Data", result["id"].ToString()), new RequestOptions { PartitionKey = new PartitionKey("User") });
                 return new OkObjectResult(result["Type"].ToString());
             }
             catch (Exception ex)

@@ -6,11 +6,11 @@ namespace Database
 {
     public class Water
     {
-        public string Naam { get; set; }
+        public string Name { get; set; }
         public string Type { get { return "Water"; } }
-        public int WaterDoel { get; set; }
-        public int WaterGedronken { get; set; }
-        public DateTime DatumTijd { get; set; }
-        public string Datum { get; set; }
+        public int WaterGoal { get; set; }
+        public int WaterDrunk { get; set; }
+        public DateTime DateTime { get; set; }
+        public string Date { get; set; }
     }
 }

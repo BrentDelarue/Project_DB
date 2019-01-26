@@ -18,7 +18,7 @@ namespace Database
     {
         [FunctionName("Login")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Login/{naam}/{wachtwoord}")] HttpRequest req, string naam, string wachtwoord,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Login/{name}/{password}")] HttpRequest req, string name, string password,
             ILogger log)
         {
             try
@@ -28,7 +28,7 @@ namespace Database
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
-                string query = $"SELECT * FROM c WHERE c.Naam = \"{naam}\" and c.Wachtwoord = \"{wachtwoord}\" and c.Type = \"Gebruiker\"";
+                string query = $"SELECT * FROM c WHERE c.Name = \"{name}\" and c.Password = \"{password}\" and c.Type = \"User\"";
                 var result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable();
                 if (result.Count() == 0)
                 {

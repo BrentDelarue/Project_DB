@@ -7,7 +7,7 @@ namespace Database
 {
     public class ProfilePicture
     {
-        public string Naam { get; set; }
+        public string Name { get; set; }
         public byte[] stream { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace Database
                 JObject user = JsonConvert.DeserializeObject<JObject>(requestBody);
                 Random rnd = new Random();
                 int length = rnd.Next(10, 15);
-                string wachtwoord = "";
+                string password = "";
                 for (int i = 0; i < length; i++)
                 {
                     Random rnd2 = new Random();
@@ -36,32 +36,32 @@ namespace Database
                     {
                         Random rnd3 = new Random();
                         string element = rnd.Next(0, 10).ToString();
-                        wachtwoord += element;
+                        password += element;
                     }
                     else if (number % 4 == 0)
                     {
                         var chars = "abcdefghijklmnopqrstuvwxyz".ToCharArray();
                         Random rnd3 = new Random();
                         int index = rnd.Next(0, chars.Length);
-                        wachtwoord += chars[index];
+                        password += chars[index];
                     }
                     else if (number % 5 == 0)
                     {
                         var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
                         Random rnd3 = new Random();
                         int index = rnd.Next(0, chars.Length);
-                        wachtwoord += chars[index];
+                        password += chars[index];
                     }
                 }
                 var client = new SendGridClient(Environment.GetEnvironmentVariable("SendGrid_API"));
                 var from = new EmailAddress("nmctstreetworkoutreset@outlook.com", "StreetWorkout");
                 var subject = "Aanvraag voorlopig wachtwoord";
-                var to = new EmailAddress(user["Email"].ToString(), user["Naam"].ToString());
-                var plainTextContent = $"Beste {user["Naam"].ToString()}{Environment.NewLine}{Environment.NewLine}\nU heeft een nieuw wachtwoord aangevraagd in de app StreetWorkout.\nVolgend wachtwoord is uw nieuw voorlopig wachtwoord: {wachtwoord}\r\nWe raden u tensterkste aan om uw wachtwoord te veranderen na het gebruiken van dit wachtwoord.\n\nGroeten support StreetWorkout.";
-                var htmlContent = $"Beste {user["Naam"].ToString()}<br><br>U heeft een nieuw wachtwoord aangevraagd in de app StreetWorkout.<br>Uw nieuw voorlopig wachtwoord: {wachtwoord}<br>We raden u tensterkste aan om uw wachtwoord te veranderen na het gebruiken van dit wachtwoord.<br><br>Groeten support StreetWorkout.";
+                var to = new EmailAddress(user["Email"].ToString(), user["Name"].ToString());
+                var plainTextContent = $"Beste {user["Name"].ToString()}{Environment.NewLine}{Environment.NewLine}\nU heeft een nieuw wachtwoord aangevraagd in de app StreetWorkout.\nVolgend wachtwoord is uw nieuw voorlopig wachtwoord: {password}\r\nWe raden u tensterkste aan om uw wachtwoord te veranderen na het gebruiken van dit wachtwoord.\n\nGroeten support StreetWorkout.";
+                var htmlContent = $"Beste {user["Name"].ToString()}<br><br>U heeft een nieuw wachtwoord aangevraagd in de app StreetWorkout.<br>Uw nieuw voorlopig wachtwoord: {password}<br>We raden u tensterkste aan om uw wachtwoord te veranderen na het gebruiken van dit wachtwoord.<br><br>Groeten support StreetWorkout.";
                 var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
                 var response = await client.SendEmailAsync(msg);
-                return new OkObjectResult(wachtwoord);
+                return new OkObjectResult(password);
             }
             catch (Exception ex)
             {

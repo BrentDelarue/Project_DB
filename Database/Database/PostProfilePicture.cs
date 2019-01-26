@@ -30,7 +30,7 @@ namespace Database
                 CloudStorageAccount _cloudStorageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("BlobStorageAccount"));
                 CloudBlobClient blobClient = _cloudStorageAccount.CreateCloudBlobClient();
                 CloudBlobContainer container = blobClient.GetContainerReference("profilepicture");
-                CloudBlockBlob cloudBlockBlob = container.GetBlockBlobReference(image.Naam); cloudBlockBlob.Properties.ContentType = "image/jpg";
+                CloudBlockBlob cloudBlockBlob = container.GetBlockBlobReference(image.Name); cloudBlockBlob.Properties.ContentType = "image/jpg";
                 await cloudBlockBlob.UploadFromStreamAsync(stream);
                 return new StatusCodeResult(200);
             }

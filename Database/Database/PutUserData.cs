@@ -30,43 +30,31 @@ namespace Database
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
-                string query = $"SELECT * FROM c WHERE c.{userData["Referentie"]} = \"{userData[userData["Referentie"].ToString()]}\" and c.Type = \"Gebruiker\"";
+                string query = $"SELECT * FROM c WHERE c.{userData["Referentie"]} = \"{userData[userData["Referentie"].ToString()]}\" and c.Type = \"User\"";
                 JObject result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
-                if (userData["Naam"] != null)
+                if (userData["Name"] != null)
                 {
-                    result["Naam"] = userData["Naam"];
+                    result["Name"] = userData["Name"];
                 }
-                if (userData["ApiNaam"] != null)
+                if (userData["ApiName"] != null)
                 {
-                    result["ApiNaam"] = userData["ApiNaam"];
+                    result["ApiName"] = userData["ApiName"];
                 }
-                if (userData["Wachtwoord"] != null)
+                if (userData["Password"] != null)
                 {
-                    result["Wachtwoord"] = userData["Wachtwoord"];
+                    result["Password"] = userData["Password"];
                 }
-                if (userData["Gewicht"] != null)
+                if (userData["Weight"] != null)
                 {
-                    result["Gewicht"] = userData["Gewicht"];
+                    result["Weight"] = userData["Weight"];
                 }
-                if (userData["Lengte"] != null)
+                if (userData["Length"] != null)
                 {
-                    result["Lengte"] = userData["Lengte"];
+                    result["Length"] = userData["Length"];
                 }
-                if (userData["Leeftijd"] != null)
+                if (userData["Age"] != null)
                 {
-                    result["Leeftijd"] = userData["Leeftijd"];
-                }
-                if (userData["API"] != null)
-                {
-                    result["API"] = userData["API"];
-                }
-                if (userData["WaterDoel"] != null)
-                {
-                    result["WaterDoel"] = userData["WaterDoel"];
-                }
-                if (userData["Token"] != null)
-                {
-                    result["Token"] = userData["Token"];
+                    result["Age"] = userData["Age"];
                 }
                 var response = await client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Data", result["id"].ToString()), result);
                 return new OkObjectResult(200);
