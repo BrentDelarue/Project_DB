@@ -19,19 +19,17 @@ namespace Database
     {
         [FunctionName("DeleteOefeningenData")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "DeleteOefeningenData/{value}")] HttpRequest req, string value,
             ILogger log)
         {
             try
             {
-                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                JObject user = JsonConvert.DeserializeObject<JObject>(requestBody);
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
-                string query = $"SELECT * FROM c WHERE c.Naam = \"{user["Naam"]}\" and c.Type = \"Oefening\"";
+                string query = $"SELECT * FROM c WHERE c.Naam = \"{value}\" and c.Type = \"Oefening\"";
                 var result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable();
                 foreach (JObject oefening in result)
                 {

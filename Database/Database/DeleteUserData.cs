@@ -21,19 +21,17 @@ namespace Database
     {
         [FunctionName("DeleteUserData")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "DeleteUserData/{value}")] HttpRequest req, string value,
             ILogger log)
         {
             try
             {
-                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                JObject user = JsonConvert.DeserializeObject<JObject>(requestBody);
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
-                string query = $"SELECT * FROM c WHERE c.Naam = \"{user["Naam"]}\" and c.Type = \"Gebruiker\"";
+                string query = $"SELECT * FROM c WHERE c.Naam = \"{value}\" and c.Type = \"Gebruiker\"";
                 var result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
                 var response = await client.DeleteDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Data", result["id"].ToString()), new RequestOptions { PartitionKey = new PartitionKey("Gebruiker") });
                 return new OkObjectResult(result["Type"].ToString());

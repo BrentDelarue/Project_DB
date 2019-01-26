@@ -18,20 +18,18 @@ namespace Database
     {
         [FunctionName("DeleteProfilePicture")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "DeleteProfilePicture/{value}")] HttpRequest req, string value,
             ILogger log)
         {
             try
             {
-                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                JObject naam = JsonConvert.DeserializeObject<JObject>(requestBody);
                 CloudStorageAccount _cloudStorageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("BlobStorageAccount"));
 
                 CloudBlobClient blobClient = _cloudStorageAccount.CreateCloudBlobClient();
 
                 CloudBlobContainer container = blobClient.GetContainerReference("profilepicture");
                 
-                CloudBlockBlob blockBlob = container.GetBlockBlobReference(naam["Naam"] + ".jpg");
+                CloudBlockBlob blockBlob = container.GetBlockBlobReference(value + ".jpg");
                 await blockBlob.DeleteIfExistsAsync();
                 return new StatusCodeResult(200);
             }
