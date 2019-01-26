@@ -18,19 +18,17 @@ namespace Database
     {
         [FunctionName("Login")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "{naam}/{wachtwoord}")] HttpRequest req, string naam, string wachtwoord,
             ILogger log)
         {
             try
             {
-                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                JObject user = JsonConvert.DeserializeObject<JObject>(requestBody);
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
-                string query = $"SELECT * FROM c WHERE c.Naam = \"{user["Naam"]}\" and c.Wachtwoord = \"{user["Wachtwoord"]}\" and c.Type = \"Gebruiker\"";
+                string query = $"SELECT * FROM c WHERE c.Naam = \"{naam}\" and c.Wachtwoord = \"{wachtwoord}\" and c.Type = \"Gebruiker\"";
                 var result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable();
                 if (result.Count() == 0)
                 {
