@@ -38,7 +38,7 @@ namespace Database
                 }
                 if (waterData["WaterDrunk"] != null)
                 {
-                    result["WaterGeDrunk"] = waterData["WaterDrunk"];
+                    result["WaterDrunk"] = waterData["WaterDrunk"];
                 }
                 var response = await client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Data", result["id"].ToString()), result);
                 return new OkObjectResult(200);
