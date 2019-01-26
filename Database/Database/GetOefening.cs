@@ -19,20 +19,18 @@ namespace Database
     {
         [FunctionName("GetOefening")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetOefening/{value}")] HttpRequest req, string value,
             ILogger log)
         {
             try
             {
-                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                JObject userReference = JsonConvert.DeserializeObject<JObject>(requestBody);
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 Uri collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
-                string query = $"SELECT * FROM c WHERE c.Naam = \"{userReference["Naam"]}\" and c.Type = \"Oefening\"";
-                var result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable();
+                string query = $"SELECT * FROM c WHERE c.Naam = \"{value}\" and c.Type = \"Oefening\"";
+                var result = client.CreateDocumentQuery<Oefening>(collectionUrl, query, queryOptions).AsEnumerable();
                 return new OkObjectResult(result);
             }
             catch (Exception ex)

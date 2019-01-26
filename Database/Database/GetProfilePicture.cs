@@ -18,13 +18,11 @@ namespace Database
     {
         [FunctionName("GetProfilePicture")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetProfilePicture/{value}")] HttpRequest req, string value,
             ILogger log)
         {
             try
             {
-                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                JObject naam = JsonConvert.DeserializeObject<JObject>(requestBody);
                 CloudStorageAccount _cloudStorageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("BlobStorageAccount"));
                 
                 CloudBlobClient blobClient = _cloudStorageAccount.CreateCloudBlobClient();
@@ -38,7 +36,7 @@ namespace Database
                 
                 string sasBlobToken = container.GetSharedAccessSignature(sasConstraints);
                 
-                CloudBlockBlob blockBlob = container.GetBlockBlobReference(naam["Naam"] + ".jpg");
+                CloudBlockBlob blockBlob = container.GetBlockBlobReference(value + ".jpg");
 
                 JObject url = new JObject();
                 url["Uri"] = blockBlob.Uri;
