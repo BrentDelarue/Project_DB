@@ -18,7 +18,7 @@ namespace Database
     {
         [FunctionName("Login")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "{naam}/{wachtwoord}")] HttpRequest req, string naam, string wachtwoord,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Login/{naam}/{wachtwoord}")] HttpRequest req, string naam, string wachtwoord,
             ILogger log)
         {
             try
