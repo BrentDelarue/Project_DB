@@ -30,7 +30,7 @@ namespace Database
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
-                string query = $"SELECT * FROM c WHERE c.Name = \"{waterData["Name"]}\" and c.Datum = \"{waterData["Date"]}\" and c.Type = \"Water\"";
+                string query = $"SELECT * FROM c WHERE c.Name = \"{waterData["Name"]}\" and c.Date = \"{waterData["Date"]}\" and c.Type = \"Water\"";
                 JObject result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
                 if (waterData["WaterGoal"] != null)
                 {
