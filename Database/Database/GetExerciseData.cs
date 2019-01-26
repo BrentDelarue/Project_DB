@@ -19,7 +19,7 @@ namespace Database
     {
         [FunctionName("GetExerciseData")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetExerciseData{value}")] HttpRequest req, string value,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetExerciseData/{value}")] HttpRequest req, string value,
             ILogger log)
         {
             try
