@@ -14,6 +14,10 @@ using System.Diagnostics;
 
 namespace Database
 {
+    //---------------------------------------------------------------------------------------//
+    //----------------------------Verwijderen van ProfilePicture-----------------------------//
+    //---------------------------------------------------------------------------------------//
+
     public static class DeleteProfilePicture
     {
         [FunctionName("DeleteProfilePicture")]
@@ -23,12 +27,13 @@ namespace Database
         {
             try
             {
+                //---Connectie met BlobStorage voorbereiden---//
                 CloudStorageAccount _cloudStorageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("BlobStorageAccount"));
-
                 CloudBlobClient blobClient = _cloudStorageAccount.CreateCloudBlobClient();
-
                 CloudBlobContainer container = blobClient.GetContainerReference("profilepicture");
-                
+
+
+                //---Voorbereiden en deleten van ProfilePicture---//
                 CloudBlockBlob blockBlob = container.GetBlockBlobReference(value + ".jpg");
                 await blockBlob.DeleteIfExistsAsync();
                 return new StatusCodeResult(200);

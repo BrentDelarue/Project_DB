@@ -14,6 +14,10 @@ using System.Linq;
 
 namespace Database
 {
+    //---------------------------------------------------------------------------------------//
+    //----------------------------Ophalen van laatste Water data-----------------------------//
+    //---------------------------------------------------------------------------------------//
+
     public static class GetLatestWaterData
     {
         [FunctionName("GetLatestWaterData")]
@@ -23,12 +27,17 @@ namespace Database
         {
             try
             {
+                //---Connectie met CosmosDB voorbereiden en maken---//
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 Uri collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
+
+                //---Query voorbereiden---//
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
                 string query = $"SELECT * FROM c WHERE c.Name = \"{value}\" and c.Type = \"Water\" ORDER BY c.Date DESC";
+
+                //---Ophalen van data uit CosmosDB en terug geven---//
                 Water result = client.CreateDocumentQuery<Water>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
                 return new OkObjectResult(result);
             }

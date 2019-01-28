@@ -14,6 +14,10 @@ using System.Linq;
 
 namespace Database
 {
+    //---------------------------------------------------------------------------------------//
+    //------------------------------Checken van User gegevens--------------------------------//
+    //---------------------------------------------------------------------------------------//
+
     public static class CheckUserData
     {
         [FunctionName("CheckUserData")]
@@ -23,12 +27,17 @@ namespace Database
         {
             try
             {
+                //---Connectie met CosmosDB voorbereiden en maken---//
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
+
+                //---Query voorbereiden---//
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
                 string query = $"SELECT * FROM c WHERE c.{reference} = \"{value}\" and c.Type = \"User\"";
+
+                //---Ophalen van data uit CosmosDB aan de hand van query en het vergelijken van de gegevens---//
                 var result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable();
                 if (result.Count() > 0)
                 {

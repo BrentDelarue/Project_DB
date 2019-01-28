@@ -15,6 +15,10 @@ using System.Collections.Generic;
 
 namespace Database
 {
+    //---------------------------------------------------------------------------------------//
+    //------------------------------Ophalen van Exercise data--------------------------------//
+    //---------------------------------------------------------------------------------------//
+
     public static class GetExerciseData
     {
         [FunctionName("GetExerciseData")]
@@ -24,12 +28,17 @@ namespace Database
         {
             try
             {
+                //---Connectie met CosmosDB voorbereiden en maken---//
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 Uri collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
+
+                //---Query voorbereiden---//
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
                 string query = $"SELECT * FROM c WHERE c.Name = \"{value}\" and c.Type = \"Exercise\"";
+
+                //---Ophalen van data uit CosmosDB en terug geven---//
                 var result = client.CreateDocumentQuery<Exercise>(collectionUrl, query, queryOptions).AsEnumerable();
                 return new OkObjectResult(result);
             }

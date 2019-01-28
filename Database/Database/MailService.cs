@@ -14,6 +14,10 @@ using SendGrid.Helpers.Mail;
 
 namespace Database
 {
+    //---------------------------------------------------------------------------------------//
+    //------------------------Opstellen van mail en nieuw wachtwoord-------------------------//
+    //---------------------------------------------------------------------------------------//
+
     public static class MailService
     {
         [FunctionName("MailService")]
@@ -23,8 +27,11 @@ namespace Database
         {
             try
             {
+                //---Ophalen van body en deserializeren---//
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 JObject user = JsonConvert.DeserializeObject<JObject>(requestBody);
+
+                //---Opstellen van een nieuw wachtwoord---//
                 Random rnd = new Random();
                 int length = rnd.Next(10, 15);
                 string password = "";
@@ -53,6 +60,8 @@ namespace Database
                         password += chars[index];
                     }
                 }
+
+                //---Opstellen van de mail naar de user---//
                 var client = new SendGridClient(Environment.GetEnvironmentVariable("SendGrid_API"));
                 var from = new EmailAddress("nmctstreetworkoutreset@outlook.com", "StreetWorkout");
                 var subject = "Aanvraag voorlopig wachtwoord";
@@ -60,6 +69,8 @@ namespace Database
                 var plainTextContent = $"Beste {user["Name"].ToString()}{Environment.NewLine}{Environment.NewLine}\nU heeft een nieuw wachtwoord aangevraagd in de app StreetWorkout.\nVolgend wachtwoord is uw nieuw voorlopig wachtwoord: {password}\r\nWe raden u tensterkste aan om uw wachtwoord te veranderen na het gebruiken van dit wachtwoord.\n\nGroeten support StreetWorkout.";
                 var htmlContent = $"Beste {user["Name"].ToString()}<br><br>U heeft een nieuw wachtwoord aangevraagd in de app StreetWorkout.<br>Uw nieuw voorlopig wachtwoord: {password}<br>We raden u tensterkste aan om uw wachtwoord te veranderen na het gebruiken van dit wachtwoord.<br><br>Groeten support StreetWorkout.";
                 var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+
+                //---Versturen van de mail en nieuw wachtwoord terug geven---//
                 var response = await client.SendEmailAsync(msg);
                 return new OkObjectResult(password);
             }

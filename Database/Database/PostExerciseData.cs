@@ -12,6 +12,10 @@ using System.Diagnostics;
 
 namespace Database
 {
+    //---------------------------------------------------------------------------------------//
+    //------------------------------Aanmaken van Exercise data-------------------------------//
+    //---------------------------------------------------------------------------------------//
+
     public static class PostExerciseData
     {
         [FunctionName("PostExerciseData")]
@@ -21,15 +25,19 @@ namespace Database
         {
             try
             {
+                //---Ophalen van body en deserializeren---//
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 Exercise exe = JsonConvert.DeserializeObject<Exercise>(requestBody);
 
+                //---Connectie met CosmosDB voorbereiden---//
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
 
+                //---Connectie met CosmosDB---//
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
 
+                //---Doorsturen van data naar CosmosDB---//
                 await client.CreateDocumentAsync(collectionUrl, exe);
                 return new StatusCodeResult(200);
             }

@@ -15,6 +15,10 @@ using System.Text;
 
 namespace Database
 {
+    //---------------------------------------------------------------------------------------//
+    //--------------------------Aanmaken/Updaten van ProfielPicture--------------------------//
+    //---------------------------------------------------------------------------------------//
+
     public static class PostProfilePicture
     {
         [FunctionName("PostProfilePicture")]
@@ -24,12 +28,17 @@ namespace Database
         {
             try
             {
+                //---Ophalen van body en deserializeren en stream maken van image---//
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 ProfilePicture image = JsonConvert.DeserializeObject<ProfilePicture>(requestBody);
                 MemoryStream stream = new MemoryStream(image.stream);
+
+                //---Connectie met BlobStorage voorbereiden---//
                 CloudStorageAccount _cloudStorageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("BlobStorageAccount"));
                 CloudBlobClient blobClient = _cloudStorageAccount.CreateCloudBlobClient();
                 CloudBlobContainer container = blobClient.GetContainerReference("profilepicture");
+
+                //---Doorsturen van data naar BlobStorage---//
                 CloudBlockBlob cloudBlockBlob = container.GetBlockBlobReference(image.Name); cloudBlockBlob.Properties.ContentType = "image/jpg";
                 await cloudBlockBlob.UploadFromStreamAsync(stream);
                 return new StatusCodeResult(200);

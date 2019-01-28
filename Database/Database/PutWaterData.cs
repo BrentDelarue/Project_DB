@@ -16,6 +16,10 @@ namespace Database
 {
     public static class PutWaterData
     {
+        //---------------------------------------------------------------------------------------//
+        //--------------------------------Updaten van Water data---------------------------------//
+        //---------------------------------------------------------------------------------------//
+
         [FunctionName("PutWaterData")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = null)] HttpRequest req,
@@ -23,14 +27,21 @@ namespace Database
         {
             try
             {
+                //---Ophalen van body en deserializeren---//
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 JObject waterData = JsonConvert.DeserializeObject<JObject>(requestBody);
+
+                //---Connectie met CosmosDB voorbereiden en maken---//
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
+
+                //---Query voorbereiden---//
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
                 string query = $"SELECT * FROM c WHERE c.Name = \"{waterData["Name"]}\" and c.Date = \"{waterData["Date"]}\" and c.Type = \"Water\"";
+
+                //---Ophalen van data uit CosmosDB aan de hand van query en het vergelijken van de gegevens---//
                 JObject result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
                 if (waterData["WaterGoal"] != null)
                 {
@@ -40,6 +51,8 @@ namespace Database
                 {
                     result["WaterDrunk"] = waterData["WaterDrunk"];
                 }
+
+                //---Document in CosmosDB updaten met nieuwe waarden---//
                 var response = await client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Data", result["id"].ToString()), result);
                 return new OkObjectResult(200);
             }

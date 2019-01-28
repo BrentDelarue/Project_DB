@@ -14,6 +14,10 @@ using System.Linq;
 
 namespace Database
 {
+    //---------------------------------------------------------------------------------------//
+    //---------------------------------Ophalen van User data---------------------------------//
+    //---------------------------------------------------------------------------------------//
+
     public static class GetUserData
     {
         [FunctionName("GetUserData")]
@@ -23,12 +27,17 @@ namespace Database
         {
             try
             {
+                //---Connectie met CosmosDB voorbereiden en maken---//
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 Uri collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
+
+                //---Query voorbereiden---//
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
                 string query = $"SELECT * FROM c WHERE c.{reference} = \"{value}\" and c.Type = \"User\"";
+
+                //---Ophalen van data uit CosmosDB en terug geven---//
                 UserSave result = client.CreateDocumentQuery<UserSave>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
                 return new OkObjectResult(result);
             }

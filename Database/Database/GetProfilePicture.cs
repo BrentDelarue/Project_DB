@@ -14,6 +14,10 @@ using Newtonsoft.Json.Linq;
 
 namespace Database
 {
+    //---------------------------------------------------------------------------------------//
+    //------------------------------Ophalen van ProfilePicture-------------------------------//
+    //---------------------------------------------------------------------------------------//
+
     public static class GetProfilePicture
     {
         [FunctionName("GetProfilePicture")]
@@ -23,21 +27,20 @@ namespace Database
         {
             try
             {
+                //---Connectie met BlobStorage voorbereiden---//
                 CloudStorageAccount _cloudStorageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("BlobStorageAccount"));
-                
                 CloudBlobClient blobClient = _cloudStorageAccount.CreateCloudBlobClient();
-                
                 CloudBlobContainer container = blobClient.GetContainerReference("profilepicture");
-                
+
+                //---Voorbereiden ophalen van ProfilePicture---//
                 SharedAccessBlobPolicy sasConstraints = new SharedAccessBlobPolicy();
                 sasConstraints.SharedAccessStartTime = DateTimeOffset.UtcNow.AddMinutes(-5);
                 sasConstraints.SharedAccessExpiryTime = DateTimeOffset.UtcNow.AddHours(24);
                 sasConstraints.Permissions = SharedAccessBlobPermissions.Read | SharedAccessBlobPermissions.Write;
-                
                 string sasBlobToken = container.GetSharedAccessSignature(sasConstraints);
-                
-                CloudBlockBlob blockBlob = container.GetBlockBlobReference(value + ".jpg");
 
+                //---Ophalen van gegevens uit Blobstorage en terug geven---//
+                CloudBlockBlob blockBlob = container.GetBlockBlobReference(value + ".jpg");
                 JObject url = new JObject();
                 url["Uri"] = blockBlob.Uri;
                 url["SAS"] = sasBlobToken;

@@ -14,6 +14,10 @@ using System.Diagnostics;
 
 namespace Database
 {
+    //---------------------------------------------------------------------------------------//
+    //---------------------------------Updaten van User data---------------------------------//
+    //---------------------------------------------------------------------------------------//
+
     public static class PutUserData
     {
         [FunctionName("PutUserData")]
@@ -23,14 +27,21 @@ namespace Database
         {
             try
             {
+                //---Ophalen van body en deserializeren---//
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 JObject userData = JsonConvert.DeserializeObject<JObject>(requestBody);
+
+                //---Connectie met CosmosDB voorbereiden en maken---//
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
+
+                //---Querie voorbereiden---//
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
                 string query = $"SELECT * FROM c WHERE c.{userData["Reference"]} = \"{userData[userData["Reference"].ToString()]}\" and c.Type = \"User\"";
+
+                //---Ophalen van data uit CosmosDB aan de hand van query en het vergelijken van de gegevens---//
                 JObject result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable().FirstOrDefault();
                 if (userData["Name"] != null)
                 {
@@ -56,6 +67,8 @@ namespace Database
                 {
                     result["Age"] = userData["Age"];
                 }
+
+                //---Document in CosmosDB updaten met nieuwe waarden---//
                 var response = await client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Data", result["id"].ToString()), result);
                 return new OkObjectResult(200);
             }

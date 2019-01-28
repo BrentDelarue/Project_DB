@@ -15,6 +15,10 @@ using Microsoft.Azure.Documents;
 
 namespace Database
 {
+    //---------------------------------------------------------------------------------------//
+    //----------------------------Verwijderen van Exercise data------------------------------//
+    //---------------------------------------------------------------------------------------//
+
     public static class DeleteExerciseData
     {
         [FunctionName("DeleteExerciseData")]
@@ -24,12 +28,17 @@ namespace Database
         {
             try
             {
+                //---Connectie met CosmosDB voorbereiden en maken---//
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
+
+                //---Query voorbereiden---//
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
                 string query = $"SELECT * FROM c WHERE c.Name = \"{value}\" and c.Type = \"Exercise\"";
+
+                //---Ophalen van data uit CosmosDB en documenten verwijderen---//
                 var result = client.CreateDocumentQuery<JObject>(collectionUrl, query, queryOptions).AsEnumerable();
                 foreach (JObject oefening in result)
                 {

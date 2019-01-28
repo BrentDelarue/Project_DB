@@ -13,6 +13,10 @@ using System.Diagnostics;
 
 namespace Database
 {
+    //---------------------------------------------------------------------------------------//
+    //-------------------------------Aanmaken van Water data---------------------------------//
+    //---------------------------------------------------------------------------------------//
+
     public static class PostWaterData
     {
         [FunctionName("PostWaterData")]
@@ -22,15 +26,19 @@ namespace Database
         {
             try
             {
+                //---Ophalen van body en deserializeren---//
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 Water water = JsonConvert.DeserializeObject<Water>(requestBody);
 
+                //---Connectie met CosmosDB voorbereiden---//
                 Uri serviceEndPoint = new Uri(Environment.GetEnvironmentVariable("CosmosEndPoint"));
                 string key = Environment.GetEnvironmentVariable("CosmosKey");
 
+                //---Connectie met CosmosDB---//
                 DocumentClient client = new DocumentClient(serviceEndPoint, key);
                 var collectionUrl = UriFactory.CreateDocumentCollectionUri("streetworkout", "Data");
 
+                //---Doorsturen van data naar CosmosDB---//
                 await client.CreateDocumentAsync(collectionUrl, water);
                 return new StatusCodeResult(200);
             }
