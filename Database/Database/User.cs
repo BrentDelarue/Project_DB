@@ -18,6 +18,6 @@ namespace Database
         public string Age { get; set; }
         public string Length { get; set; }
         public string Weight { get; set; }
-        public string Image { get; set; }
+        public byte[] Image { get; set; }
     }
 }
