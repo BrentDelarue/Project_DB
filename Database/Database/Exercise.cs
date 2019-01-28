@@ -14,6 +14,6 @@ namespace Database
         public string Duration { get; set; }
         public string Repetitions { get; set; }
         public string RepetitionsColor { get; set; }
-        public string Date { get { return DateTime.Now.ToString("MM/dd/yyyy HH:mm"); } }
+        public string Date { get; set; }
     }
 }
