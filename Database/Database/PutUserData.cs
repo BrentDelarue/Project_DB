@@ -67,6 +67,10 @@ namespace Database
                 {
                     result["Age"] = userData["Age"];
                 }
+                if (userData["Image"] != null)
+                {
+                    result["Image"] = userData["Image"];
+                }
 
                 //---Document in CosmosDB updaten met nieuwe waarden---//
                 var response = await client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri("streetworkout", "Data", result["id"].ToString()), result);
